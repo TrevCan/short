@@ -120,10 +120,15 @@ int main () {
 
 		printf("get is: \n%s\n", getReqUrl);
 
-		if ( strstr(getReqUrl, "/head") != NULL )
+		if ( strstr(getReqUrl, "/head") != NULL ){
 			get_response_head( buffer, responseBuffer);
-		else
+		}
+		else if (strstr( getReqUrl, "/tono") != NULL ){
+			get_response_tono( buffer, responseBuffer);
+		}
+		else{
 			get_response_default ( buffer, responseBuffer);
+		}
 
 
 
@@ -191,6 +196,30 @@ int get_response_default ( void *reqBuffer, void *resBuffer ) {
 
 	strncat(resBuffer, boilerplatehttp, strlen(boilerplatehttp) );
 	strncat(resBuffer, html_start, strlen(html_start) );
+
+	const char intro_html[] = "Hello, world!";
+	strncat(resBuffer, intro_html, strlen(intro_html) );
+
+	strncat(resBuffer, html_end, strlen(html_end) );
+
+	return 0;
+
+
+}
+
+int get_response_tono ( void *reqBuffer, void *resBuffer ) {
+
+	strncat(resBuffer, boilerplatehttp, strlen(boilerplatehttp) );
+	strncat(resBuffer, html_start, strlen(html_start) );
+	const char icon_html[] = "<head>\n"
+							"<link rel=icon href=https://trevcan.duckdns.org/files/assets/tono.jpeg\n"
+							" type=image/jpeg >\n"
+							" </head>\n";
+
+	const char img_html[] =	"<img src=https://trevcan.duckdns.org/files/assets/tono.jpeg  > ";
+											//
+	strncat(resBuffer, icon_html, strlen(icon_html) );
+	strncat(resBuffer, img_html, strlen(img_html) );
 
 	const char intro_html[] = "Hello, world!";
 	strncat(resBuffer, intro_html, strlen(intro_html) );
