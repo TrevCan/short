@@ -1,0 +1,10 @@
+[Unit]
+Description=Short. Link shortener server, among other things.
+After=syslog.target network.target
+
+[Service]
+PrivateTmp=true
+ExecStart=/var/www/short/serveme
+
+[Install]
+WantedBy=multi-user.target
