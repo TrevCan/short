@@ -1,6 +1,30 @@
+# Short. simple http server written in C
+
 not really my software, more
 like a copy/ learning experience from
 < https://bruinsslot.jp/post/simple-http-webserver-in-c/ >
+
+
+### features
+- returns headers
+- url shortening service
+
+
+Well, I've update this main.c file and it now spits the whole request (given
+that it's less than 2000 bytes) when the GET Location contains the substring
+`head`. Therefore, `header`,`headss`,`head*` will all respond to the same
+function.
+
+I'm also planning on adding a url request service to redirect it and shorten
+it.
+Even a small file hosting service would be nice. With a simple interface
+available
+thru curl and http(s) forms.
+
+
+I do not plan on using any fancy data structures, in case you were wondering
+why I wasn't using mySQL or uwsgi or any fancy stack. I'm trying to go
+from the simplest thing here and create an MVP (minimal viable product).
 
 # resources
 - https://bruinsslot.jp/post/simple-http-webserver-in-c/ 
