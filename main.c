@@ -10,24 +10,57 @@
 #define PORT 6969
 #define BUFFER_SIZE 2000
 
+
+
+char boilerplatehttp[] = ""
+"HTTP/1.0 200 OK\r\n"
+"Server: miwebserver!\r\n"
+"Content-type: text/html\r\n\r\n"
+;
+
+char html_start [] = ""
+"<html>\r\n" ;
+
+char html_end [] = ""
+"</html>\r\n" ;
+
+char html_code_start [] =	""
+"\t<code>\r\n" ;
+
+char html_code_end [] = ""
+"\t</code>\r\n" ;
+
+
+
+
 int main () {
 
 	printf("Hello, world!\n");
 
 	char buffer[BUFFER_SIZE];
 
-	char boilerplatehttp[] = ""
-				  "HTTP/1.0 200 OK\r\n"
-                  "Server: miwebserver!\r\n"
-                  "Content-type: text/plain\r\n\r\n"
-				  "<html>\r\n"
-				  "john cena tacos!\r\n"
-				  "</html>\r\n";
+	memset( buffer, '\0', BUFFER_SIZE);
+
+	char responseBuffer[BUFFER_SIZE];
+
+
+
+	//		"<html>\r\n"
+	//		"john cena tacos!\r\n"
+	//		"</html>\r\n"
+	//		;
 
 
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if ( sockfd == -1 ) {
 		perror("webserver (socket)");	
+		return -1;
+	}
+
+	u_int yes = 1;
+
+	if ( setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes) ) == -1 ){
+		perror("webserver setsockopt error");
 		return -1;
 	}
 
@@ -79,22 +112,92 @@ int main () {
 		}
 		printf(";END content\n");
 
-		snprintf(buffer, BUFFER_SIZE, "yeeeet!");
-//		strncat(buffer, boilerplatehttp, 1000);
+		char getReqUrl[200];
+
+		memset( getReqUrl, '\0', 200);
+
+		sscanf( buffer, "GET %s ", getReqUrl);		
+
+		printf("get is: \n%s\n", getReqUrl);
+
+		if ( strstr(getReqUrl, "/head") != NULL )
+			get_response_head( buffer, responseBuffer);
+		else
+			get_response_default ( buffer, responseBuffer);
+
+
+
+
+
+		//snprintf(buffer, BUFFER_SIZE, "yeeeet!");
+		//
+		//		strncat(responseBuffer, boilerplatehttp, strlen(boilerplatehttp) );
+		//		strncat(responseBuffer, html_start, strlen(html_start) );
+		//		strncat(responseBuffer, html_code_start, strlen(html_code_start) );
+		//		strncat(responseBuffer, buffer, strlen(buffer) );
+		//		strncat(responseBuffer, html_code_end, strlen(html_code_end) );
+		//		strncat(responseBuffer, html_end, strlen(html_end) );
+
+
+		printf("Response buffer is: \n%d bytes long.\n", strlen(responseBuffer) );
 
 
 		//int response = write(newsockfd, buffer, BUFFER_SIZE);
-		int response = write(newsockfd, boilerplatehttp, strlen(boilerplatehttp));
+		int response = write(newsockfd, responseBuffer, strlen(responseBuffer));
+		// int response = write(newsockfd, buffer, strlen(boilerplatehttp));
 
 		if (response == -1 ){
 			perror("webserver. response");
 			continue;
 		}
 
+		responseBuffer[0] = '\0';
+
 		close(newsockfd);
+
+		memset( buffer, '\0', BUFFER_SIZE);
+		// buffer[0] = '\0';
+		// memset is necessary because the response does may not return a null byte,
+		// therefore when making the strncat() we might get other information from before
+		// if the response is smaller than before
 
 	}
 
 
-//	return 0;
+	//	return 0;
+}
+
+
+int get_response_head ( void *reqBuffer, void *resBuffer ) {
+
+	strncat(resBuffer, boilerplatehttp, strlen(boilerplatehttp) );
+	strncat(resBuffer, html_start, strlen(html_start) );
+
+	const char intro_html[] = "<p>Hello. You are requesting that I return the headers you send. Here they are:</p>";
+	strncat(resBuffer, intro_html, strlen(intro_html) );
+
+	strncat(resBuffer, html_code_start, strlen(html_code_start) );
+	strncat(resBuffer, reqBuffer, strlen(reqBuffer) );
+	strncat(resBuffer, html_code_end, strlen(html_code_end) );
+	strncat(resBuffer, html_end, strlen(html_end) );
+
+	return 0;
+
+
+}
+
+
+int get_response_default ( void *reqBuffer, void *resBuffer ) {
+
+	strncat(resBuffer, boilerplatehttp, strlen(boilerplatehttp) );
+	strncat(resBuffer, html_start, strlen(html_start) );
+
+	const char intro_html[] = "Hello, world!";
+	strncat(resBuffer, intro_html, strlen(intro_html) );
+
+	strncat(resBuffer, html_end, strlen(html_end) );
+
+	return 0;
+
+
 }
