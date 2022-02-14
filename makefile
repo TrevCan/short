@@ -10,8 +10,9 @@ stop:
 status:
 	systemctl status short.service
 
-install-systemd:
+install-systemd: compile
 	install systemd/short.service /etc/systemd/system/	
 	systemctl daemon-reload
 
-
+run: compile
+	./serveme 
