@@ -26,6 +26,28 @@ I do not plan on using any fancy data structures, in case you were wondering
 why I wasn't using mySQL or uwsgi or any fancy stack. I'm trying to go
 from the simplest thing here and create an MVP (minimal viable product).
 
+
+# building
+You can build using the `make` command (GNU Make), alternatively call the
+`compile` target. It should work out of the box with any Linux-based 
+distribution. Email me for any relevant library installation instructions.
+
+# installing
+you can use the `make install-systemd` command to install a systemd service.
+The service assumes the compiled file is at `/var/www/short/serveme` so keep 
+that in mind. You can edit the service file at `systemd/short.service` to
+suit your needs.
+
+# running
+You may now enable and start the systemd service, provided you have compiled the latest
+version of the program with `make`.
+
+`systemctl enable --now short.service`.
+
+The default port is `6969` but you can change it in the source code macros.
+
+
+
 # resources
 - https://bruinsslot.jp/post/simple-http-webserver-in-c/ 
 - https://stackoverflow.com/questions/176409/build-a-simple-http-server-in-c#176477
