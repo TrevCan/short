@@ -1,7 +1,8 @@
 # Short. simple http server written in C
 
-not really my software, more
-like a copy/ learning experience from
+
+I started out this project as a simple project to create a simple HTTP Server
+in C, originally based on this blog post: 
 < https://bruinsslot.jp/post/simple-http-webserver-in-c/ >
 
 
